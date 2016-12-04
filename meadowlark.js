@@ -1,7 +1,15 @@
 var express = require('express');
 var app = express();
 var handlebars = require('express-handlebars')
-	.create({ defaultLayout:'main' });
+	.create({ defaultLayout:'main',
+    helpers: {
+        section: function(name, options){
+            if(!this._sections) this._sections = {};
+            this._sections[name] = options.fn(this);
+            return null;
+        }
+    }
+ });
 var fortune = require('./lib/fortune');   
 
 app.engine('handlebars', handlebars.engine);
@@ -27,6 +35,16 @@ app.get('/about', function(req,res){
     });
 });
 
+app.get('/tours/hood-river', function(req, res) {
+    res.render('tours/hood-river');
+});
+app.get('/tours/oregon-coast', function(req, res){
+	res.render('tours/oregon-coast');
+});
+app.get('/tours/request-group-rate', function(req, res){
+    console.log('/tours/request-group-rate');
+	res.render('tours/request-group-rate');
+});
 // 404 catch-all handler (middleware)
 app.use(function(req, res, next){
 	res.status(404);
