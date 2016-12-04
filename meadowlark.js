@@ -9,6 +9,11 @@ app.set('view engine', 'handlebars');
 
 app.set('port', process.env.PORT || 3000);
 
+app.use(function(req, res, next) {
+    res.locals.showTests = app.get('env') !== 'production' && req.query.test === '1';
+    next();
+});
+
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res) {
@@ -16,9 +21,10 @@ app.get('/', function(req, res) {
 });
 
 app.get('/about', function(req,res){
-	// var randomFortune = 
-	// 	fortuneCookies[Math.floor(Math.random() * fortuneCookies.length)];
-	res.render('about', {fortune: fortune.getFortune()});
+	res.render('about', {
+        fortune: fortune.getFortune(),
+        pageTestScript: 'qa/test-about.js'
+    });
 });
 
 // 404 catch-all handler (middleware)
